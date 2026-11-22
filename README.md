@@ -33,9 +33,9 @@ Keep `pipeline.py` free of Tkinter code, so you can test the whole thing from th
 
 ## Step 1: Port and sanity-check (day 1-2, parallel)
 
-- [ ] Port the Java planner to `planner.py` — Initials: ____ Date: ______
-- [ ] Test the planner on a small case, such as the one in the walkthrough — Initials: ____ Date: ______
-- [ ] Copy `core.py` into `data.py` and `features.py` — Initials: ____ Date: ______
+- [X] Port the Java planner to `planner.py` — Initials: HC Date: 11/22
+- [X] Test the planner on a small case, such as the one in the walkthrough — Initials: HC Date: 11/22
+- [X] Copy `core.py` into `data.py` and `features.py` — Initials: HC Date: 11/22
 - [ ] Switch to the continuous forward-return label — Initials: ____ Date: ______
 - [ ] Add the 3-way split with embargo — Initials: ____ Date: ______
 - [ ] Add training-only normalization — Initials: ____ Date: ______
