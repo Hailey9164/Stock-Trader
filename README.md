@@ -35,7 +35,6 @@ Keep `pipeline.py` free of Tkinter code, so you can test the whole thing from th
 
 - [ ] Port the Java planner to `planner.py` — Initials: ____ Date: ______
 - [ ] Test the planner on a small case, such as the one in the walkthrough — Initials: ____ Date: ______
-- [ ] Compare the planner output with the Java version — Initials: ____ Date: ______
 - [ ] Copy `core.py` into `data.py` and `features.py` — Initials: ____ Date: ______
 - [ ] Switch to the continuous forward-return label — Initials: ____ Date: ______
 - [ ] Add the 3-way split with embargo — Initials: ____ Date: ______
