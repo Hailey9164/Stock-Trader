@@ -39,12 +39,12 @@ Keep `pipeline.py` free of Tkinter code, so you can test the whole thing from th
 - [X] Switch to the continuous forward-return label — Initials: MS Date: 11/24
 - [X] Add the 3-way split with embargo — Initials: MS Date: 11/24
 - [X] Add training-only normalization — Initials: MS Date: 11/24
-- [ ] Print the date ranges and the means and stds — Initials: ____ Date: ______
-- [ ] Write the sample news file — Initials: ____ Date: ______
-- [ ] Write the LLM scorer using the Qwen setup from the lab notebook — Initials: ____ Date: ______
-- [ ] Return `(0.0, "offline")` on any failure — Initials: ____ Date: ______
+- [X] Print the date ranges and the means and stds — Initials: HC Date: 11/24
+- [X] Write the sample news file — Initials: HC Date: 11/24
+- [X] Write the LLM scorer using the Qwen setup from the lab notebook — Initials: HC Date: 11/24
+- [X] Return `(0.0, "offline")` on any failure — Initials: HC Date: 11/24
 
-**Step 1 sign-off (reviewer):** Initials: ____ Date: ______
+**Step 1 sign-off (reviewer):** Initials: HC Date: 11/24
 
 ---
 
