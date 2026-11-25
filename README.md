@@ -10,7 +10,7 @@ Check each box when the task is done, then initial and date it. Each step ends w
 | Name | Initials |
 |---|---|
 | Hailey Campebll | HC |
-| | |
+| Matthew Sychareun| MS |
 | | |
 
 ## Module layout
@@ -36,9 +36,9 @@ Keep `pipeline.py` free of Tkinter code, so you can test the whole thing from th
 - [X] Port the Java planner to `planner.py` — Initials: HC Date: 11/22
 - [X] Test the planner on a small case, such as the one in the walkthrough — Initials: HC Date: 11/22
 - [X] Copy `core.py` into `data.py` and `features.py` — Initials: HC Date: 11/22
-- [ ] Switch to the continuous forward-return label — Initials: ____ Date: ______
-- [ ] Add the 3-way split with embargo — Initials: ____ Date: ______
-- [ ] Add training-only normalization — Initials: ____ Date: ______
+- [X] Switch to the continuous forward-return label — Initials: MS Date: 11/24
+- [X] Add the 3-way split with embargo — Initials: MS Date: 11/24
+- [X] Add training-only normalization — Initials: MS Date: 11/24
 - [ ] Print the date ranges and the means and stds — Initials: ____ Date: ______
 - [ ] Write the sample news file — Initials: ____ Date: ______
 - [ ] Write the LLM scorer using the Qwen setup from the lab notebook — Initials: ____ Date: ______
