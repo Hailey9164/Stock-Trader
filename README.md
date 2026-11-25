@@ -50,9 +50,9 @@ Keep `pipeline.py` free of Tkinter code, so you can test the whole thing from th
 
 ## Step 2: Models (day 3-4)
 
-- [ ] Build the baseline — Initials: ____ Date: ______
-- [ ] Build the forest regressor — Initials: ____ Date: ______
-- [ ] Build the ANN (32,16 hidden, ReLU, linear output, MSE loss, Adam at lr 0.001, early stopping on validation) — Initials: ____ Date: ______
+- [X] Build the baseline — Initials: HC Date: 11/25
+- [X] Build the forest regressor — Initials: HC Date: 11/25
+- [X] Build the ANN (32,16 hidden, ReLU, linear output, MSE loss, Adam at lr 0.001, early stopping on validation) — Initials: HC Date: 11/25
 - [ ] Emit per-epoch train and validation loss — Initials: ____ Date: ______
 - [ ] Evaluate once on test: baseline, forest, and ANN with MAE/RMSE and direction accuracy — Initials: ____ Date: ______
 - [ ] Run with and without sentiment (zeroed) and keep both results for the write-up — Initials: ____ Date: ______
