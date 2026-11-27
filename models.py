@@ -260,6 +260,48 @@ class NeuralNet:
             return self.model_(torch.tensor(X, dtype=torch.float32)).squeeze(1).numpy().astype(np.float64)
 
 
+# --------------------------------------------------------- per-epoch loss, emitted
+def format_history(net, max_lines=40):
+    """The per-epoch train and validation loss as text, in the walkthrough's style:
+
+        epoch   1   train 0.00412   val 0.00408
+        epoch  12   train 0.00338   val 0.00381  <- best
+        stop: early stopping: validation loss did not improve for 10 epochs; weights from epoch 12 kept
+
+    Every epoch is listed up to `max_lines`; a longer run is thinned evenly, always keeping the best
+    and the last epoch. (For live updates while training, pass `on_epoch` to NeuralNet.fit.)"""
+    h, n = net.history_, len(net.history_["epoch"])
+    keep = range(n)
+    if n > max_lines:
+        step = int(np.ceil(n / (max_lines - 2)))
+        keep = sorted(set(range(0, n, step)) | {net.best_epoch_ - 1, n - 1})
+    lines = []
+    for i in keep:
+        va = h["val_loss"][i]
+        mark = "  <- best" if va is not None and h["epoch"][i] == net.best_epoch_ else ""
+        lines.append(f"epoch {h['epoch'][i]:>3}   train {h['train_loss'][i]:.5f}   "
+                     f"val {'  n/a  ' if va is None else format(va, '.5f')}{mark}")
+    kept = f"; weights from epoch {net.best_epoch_} kept" if net.best_val_loss_ is not None else ""
+    lines.append(f"stop: {net.stop_reason_}{kept}")
+    return "\n".join(lines)
+
+
+def plot_loss_curves(ax, history, best_epoch=None):
+    """Draw train and validation loss on a matplotlib Axes (works for the Tkinter canvas, or for
+    saving a PNG). Call it again with the growing history from an `on_epoch` callback for a live plot."""
+    ep = history["epoch"]
+    ax.plot(ep, history["train_loss"], label="train", color="#005030")
+    if all(v is not None for v in history["val_loss"]) and len(ep):
+        ax.plot(ep, history["val_loss"], label="validation", color="#B52B4C")
+    if best_epoch:
+        ax.axvline(best_epoch, linestyle="--", linewidth=1, color="#6E6A61", label=f"best epoch ({best_epoch})")
+    ax.set_xlabel("epoch")
+    ax.set_ylabel("MSE loss")
+    ax.set_title("Network training")
+    ax.legend()
+    return ax
+
+
 if __name__ == "__main__":
     import os
 
@@ -290,7 +332,6 @@ if __name__ == "__main__":
         print(f"{m.name:<30}{np.abs(p - yva).mean():>10.5f}{np.sqrt(((p - yva) ** 2).mean()):>10.5f}{acc:>14.1%}")
     print("\nforest feature importances:", {k: round(v, 3) for k, v in forest.importances().items()})
     if hasattr(ann, "history_"):
-        print(f"network: {ann.epochs_run_} epochs, best epoch {ann.best_epoch_} "
-              f"(val MSE {ann.best_val_loss_:.6f}); {ann.stop_reason_}")
+        print("\nnetwork training, per epoch:\n" + format_history(ann))
         print("note: validation chose the network's best epoch, so its validation numbers are a little "
               "optimistic. Compare models fairly on the test block, once, at the end.")

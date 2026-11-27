@@ -15,8 +15,10 @@ this module, AssertionError is raised. A look-ahead bug must be loud, never a qu
 The model loading code follows the lab notebook (LLM_Chat_Example_2, Steps 2-4 and 9). It is
 imported lazily, so the rest of the app runs on a machine with no torch/transformers at all.
 """
+import hashlib
 import json
 import math
+import os
 import re
 import warnings
 
@@ -176,6 +178,94 @@ def score_all(symbols, news, decision_date, use_llm=True, generate_fn=None,
         if n_failed:
             status += f" ({n_failed} of {len(out)} calls failed and fell back to offline)"
     return out, status
+
+
+# ------------------------------------------------------------ sentiment as a feature
+def _load_cache(path):
+    if path and os.path.exists(path):
+        try:
+            with open(path, encoding="utf-8") as f:
+                return json.load(f)
+        except (OSError, ValueError):
+            pass                                        # a damaged cache is just an empty one
+    return {}
+
+
+def _save_cache(path, cache):
+    if not path:
+        return
+    tmp = path + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(cache, f)
+    os.replace(tmp, path)                               # never leave a half-written cache behind
+
+
+def sentiment_for_rows(feats, news, generate_fn=None, window_days=30, max_headlines=12,
+                       every_n_days=5, model_id=MODEL_ID, cache_path=None, progress=None):
+    """A sentiment score for EVERY row of `feats` (the 7th network input). Returns (Series, stats).
+
+    Scoring one prompt per row would mean thousands of LLM calls, so this cuts the work three ways:
+      * every_n_days: a stock is scored on every n-th trading day and that score is carried forward
+        until the next scoring day. The carried score only uses OLDER headlines, so nothing leaks.
+      * the same stock with the same headlines in its window is scored once, whatever the date.
+      * `cache_path`: scores are saved to a JSON file as they arrive, so an interrupted run resumes
+        where it stopped and a re-run costs no LLM calls. Failures are not cached.
+
+    Look-ahead is still impossible: each scored row only sees headlines strictly before its own date
+    (headlines_before) and score-time asserts it (assert_before).
+
+    generate_fn=None (LLM off) or no news -> every score is 0.0, with no calls. A stock with no headlines
+    in the window scores 0.0. A failed call scores 0.0 and is counted in stats['failed'].
+    progress(done, total, symbol) is called every 25 scored rows, with total counting scoring days."""
+    if int(every_n_days) < 1:
+        raise ValueError("every_n_days must be at least 1.")
+    step = int(every_n_days)
+    out = pd.Series(0.0, index=feats.index, name="sentiment")
+    stats = {"rows": int(len(feats)), "scoring_rows": 0, "no_news": 0, "llm_calls": 0, "cache_hits": 0, "failed": 0}
+    if generate_fn is None or news is None or len(news) == 0:
+        return out, stats
+
+    cache = _load_cache(cache_path)
+    by_symbol = {s: g for s, g in news.groupby("Symbol")}
+    counts = feats.groupby("Symbol").size()
+    total = int(sum(-(-int(c) // step) for c in counts))        # ceil(c / step)
+    fresh = 0
+
+    for sym, rows in feats.groupby("Symbol"):
+        rows = rows.sort_values("Date")
+        sym_news = by_symbol.get(sym)
+        score = 0.0
+        for k, (idx, date) in enumerate(zip(rows.index, rows["Date"])):
+            if k % step == 0:
+                stats["scoring_rows"] += 1
+                hl = headlines_before(sym_news, sym, date, window_days, max_headlines) if sym_news is not None else []
+                assert_before(hl, date)                          # the look-ahead guard, per scored row
+                if not hl:
+                    stats["no_news"] += 1
+                    score = 0.0
+                else:
+                    # The key is the stock + its headlines, NOT the prompt text: the prompt also carries the
+                    # decision date, which differs on every row, so keying on it would defeat the dedupe.
+                    key = hashlib.sha256("\n".join([model_id, sym, *(t for _, t in hl)]).encode("utf-8")).hexdigest()
+                    if key in cache:
+                        stats["cache_hits"] += 1
+                        score = float(cache[key][0])
+                    else:
+                        try:
+                            score, reason = parse_response(generate_fn(build_prompt(sym, hl, date)))
+                            cache[key] = [score, reason]
+                            stats["llm_calls"] += 1
+                            fresh += 1
+                            if fresh % 50 == 0:
+                                _save_cache(cache_path, cache)
+                        except Exception:                       # noqa: BLE001 - failed call: 0.0, not cached
+                            stats["failed"] += 1
+                            score = 0.0
+                if progress and (stats["scoring_rows"] % 25 == 0 or stats["scoring_rows"] == total):
+                    progress(stats["scoring_rows"], total, sym)
+            out.at[idx] = score
+    _save_cache(cache_path, cache)
+    return out, stats
 
 
 if __name__ == "__main__":

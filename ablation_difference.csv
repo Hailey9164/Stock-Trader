@@ -1,0 +1,4 @@
+model,mae,rmse,direction_acc,r2
+Baseline (training mean),0.0,0.0,0.0,0.0
+Random forest (Assignment 2),0.0,0.0,0.0,0.0
+Neural network (ANN),0.0,0.0,0.0,0.0
