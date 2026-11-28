@@ -66,12 +66,12 @@ Keep `pipeline.py` free of Tkinter code, so you can test the whole thing from th
 - [X] Compute the final score as predicted return plus weight × sentiment — Initials: HC Date: 11/27
 - [X] Pick the top N — Initials: HC Date: 11/27
 - [X] Allocate with equal dollars and whole shares — Initials: HC Date: 11/27
-- [ ] Build the goal map with zeros for unpicked holdings — Initials: ____ Date: ______
-- [ ] Call the planner and compute the running cash balance for each trade — Initials: ____ Date: ______
-- [ ] Write the explainer prompt from computed values only — Initials: ____ Date: ______
-- [ ] Write the template fallback for LLM-off mode — Initials: ____ Date: ______
+- [X] Build the goal map with zeros for unpicked holdings — Initials: HC Date: 11/27
+- [X] Call the planner and compute the running cash balance for each trade — Initials: HC Date: 11/27
+- [X] Write the explainer prompt from computed values only — Initials: HC Date: 11/27
+- [X] Write the template fallback for LLM-off mode — Initials: HC Date: 11/27
 
-**Step 3 sign-off (reviewer):** Initials: ____ Date: ______
+**Step 3 sign-off (reviewer):** Initials: HC Date: 11/27
 
 ---
 
