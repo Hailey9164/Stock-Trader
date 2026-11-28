@@ -77,9 +77,9 @@ Keep `pipeline.py` free of Tkinter code, so you can test the whole thing from th
 
 ## Step 4: `pipeline.py` (day 5)
 
-- [ ] Chain every stage in order, with progress callbacks — Initials: ____ Date: ______
-- [ ] Confirm `pipeline.py` has no Tkinter code — Initials: ____ Date: ______
-- [ ] Test from the command line with the LLM on — Initials: ____ Date: ______
+- [X] Chain every stage in order, with progress callbacks — Initials: HC Date: 11/28
+- [X] Confirm `pipeline.py` has no Tkinter code — Initials: HC Date: HC
+- [ ] Test from the command line with the LLM on — Initials: ____ Date: 11/28
 - [ ] Test from the command line with the LLM off — Initials: ____ Date: ______
 
 **Step 4 sign-off (reviewer):** Initials: ____ Date: ______
